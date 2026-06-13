@@ -125,9 +125,6 @@ func onInfluxConnect(
 	ctx a3interface.ArmaExtensionContext,
 	data string,
 ) (string, error) {
-	if influx.InfluxClient != nil {
-		influx.InfluxClient.Close()
-	}
 	err := influx.Setup(
 		settings.Active,
 	)

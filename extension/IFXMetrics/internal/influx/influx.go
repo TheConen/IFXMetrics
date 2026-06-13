@@ -19,10 +19,40 @@ var activeSettings *viper.Viper
 var writeAPIs = map[string]api.WriteAPI{}
 var writeAPIErrorChannels = map[string]<-chan error{}
 
+var errorHandlerCancel context.CancelFunc
+
+// Close cleanly shuts down write APIs and the InfluxDB client.
+// Must be called before creating a new client.
+func Close() {
+	Connected = false
+
+	// stop the previous error handler goroutine
+	if errorHandlerCancel != nil {
+		errorHandlerCancel()
+		errorHandlerCancel = nil
+	}
+
+	// flush and close existing write APIs before closing the client
+	for bucket, w := range writeAPIs {
+		w.Flush()
+		delete(writeAPIs, bucket)
+		delete(writeAPIErrorChannels, bucket)
+	}
+
+	if InfluxClient != nil {
+		InfluxClient.Close()
+		InfluxClient = nil
+	}
+}
+
 func Setup(
 	settings *viper.Viper,
 ) error {
 	activeSettings = settings
+
+	// ensure any previous client is fully cleaned up
+	Close()
+
 	// create influx client
 	InfluxClient = influxdb2.NewClientWithOptions(
 		activeSettings.GetString("influxdb.host"),
@@ -37,9 +67,16 @@ func Setup(
 
 	Connected = true
 
-	// start error handler
+	// start error handler with cancellation support
+	var ctx context.Context
+	ctx, errorHandlerCancel = context.WithCancel(context.Background())
 	go func() {
 		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+			}
 			for bucket, err := range writeAPIErrorChannels {
 				thisLog := logger.FileOnly.With().
 					Str("component", "influx").
