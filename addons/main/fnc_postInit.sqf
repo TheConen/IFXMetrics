@@ -41,6 +41,7 @@ if (!GVARMAIN(enabled)) exitWith {
 };
 
 // get custom CBA handlers
+GVARMAIN(cbaHandlers) = createHashMap;
 private _handlersFromExtension = GVARMAIN(extensionName) callExtension ":CUSTOM:CBA:EVENTS:";
 
 _handlersFromExtension = parseSimpleArray _handlersFromExtension;
