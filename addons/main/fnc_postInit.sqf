@@ -156,5 +156,49 @@ GVARMAIN(extensionName) callExtension [
 } forEach GVARMAIN(cbaHandlers);
 
 
+// MonitorDS setup
+private _monitorDSSettings = GVARMAIN(extensionName) callExtension ":MONITORDS:SETTINGS:";
+if (!isNil "_monitorDSSettings") then {
+    private _monitorDSArr = parseSimpleArray _monitorDSSettings;
+    private _monitorDSEnabled = _monitorDSArr select 0;
+    private _monitorDSInterval = _monitorDSArr select 1;
+    private _monitorDSPassword = _monitorDSArr select 2;
+
+    if (_monitorDSEnabled) then {
+        private _startCmd = format ["#monitords %1", _monitorDSInterval];
+        private _startResult = _monitorDSPassword serverCommand _startCmd;
+        if (_startResult) then {
+            diag_log formatText[
+                "[%1] (INFO): MonitorDS started with command: %2",
+                GVARMAIN(logPrefix),
+                _startCmd
+            ];
+        } else {
+            diag_log formatText[
+                "[%1] (ERROR): Failed to execute MonitorDS start command: %2",
+                GVARMAIN(logPrefix),
+                _startCmd
+            ];
+        };
+
+        addMissionEventHandler ["MPEnded", {
+            private _stopResult = (GVARMAIN(monitorDSPassword)) serverCommand "#monitords 0";
+            if (_stopResult) then {
+                diag_log formatText[
+                    "[%1] (INFO): MonitorDS stopped with command: #monitords 0",
+                    GVARMAIN(logPrefix)
+                ];
+            } else {
+                diag_log formatText[
+                    "[%1] (ERROR): Failed to execute MonitorDS stop command: #monitords 0",
+                    GVARMAIN(logPrefix)
+                ];
+            };
+        }];
+
+        GVARMAIN(monitorDSPassword) = _monitorDSPassword;
+    };
+};
+
 // wait five seconds, then start the loop
 call FUNC(captureLoop);

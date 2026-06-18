@@ -84,6 +84,11 @@ func init() {
 		SetRunInBackground(false).
 		Register()
 
+	a3interface.NewRegistration(":MONITORDS:SETTINGS:").
+		SetFunction(onMonitorDSSettings).
+		SetRunInBackground(false).
+		Register()
+
 	a3interface.NewRegistration(":INFLUX:CONNECT:").
 		SetFunction(onInfluxConnect).
 		SetRunInBackground(false).
@@ -118,6 +123,18 @@ func onCustomCBAEventsCommand(
 	return fmt.Sprintf(
 		`%s`,
 		se,
+	), nil
+}
+
+func onMonitorDSSettings(
+	ctx a3interface.ArmaExtensionContext,
+	data string,
+) (string, error) {
+	return fmt.Sprintf(
+		`[%t, %d, "%s"]`,
+		settings.Active.GetBool("monitords.enabled"),
+		settings.Active.GetInt("monitords.interval"),
+		settings.Active.GetString("monitords.serverPassword"),
 	), nil
 }
 

@@ -10,6 +10,11 @@
     "debug": false,
     "traceLogToFile": false
   },
+  "monitords": {
+    "enabled": true,
+    "interval": 5,
+    "serverPassword": "YOUR_SERVER_PASSWORD"
+  },
   "cbaEventHandlers": {
     "milsimServerEfficiency": {
       "eventName": "milsimServerEfficiency",

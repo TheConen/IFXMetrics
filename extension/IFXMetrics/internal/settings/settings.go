@@ -46,7 +46,13 @@ func Setup(
 		"debug":         "true",
 	})
 
-	Active.SetDefault("cbaEventHandlers", []map[string]interface{}{})
+	Active.SetDefault("monitords", map[string]any{
+		"enabled":        false,
+		"interval":       5,
+		"serverPassword": "",
+	})
+
+	Active.SetDefault("cbaEventHandlers", []map[string]any{})
 
 	if err := Active.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
