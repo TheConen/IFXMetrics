@@ -13,7 +13,7 @@
   "monitords": {
     "enabled": true,
     "interval": 5,
-    "serverPassword": "YOUR_SERVER_PASSWORD"
+    "serverCommandPassword": "YOUR_SERVER_COMMAND_PASSWORD"
   },
   "cbaEventHandlers": {
     "milsimServerEfficiency": {

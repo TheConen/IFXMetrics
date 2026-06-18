@@ -134,7 +134,7 @@ func onMonitorDSSettings(
 		`[%t, %d, "%s"]`,
 		settings.Active.GetBool("monitords.enabled"),
 		settings.Active.GetInt("monitords.interval"),
-		settings.Active.GetString("monitords.serverPassword"),
+		settings.Active.GetString("monitords.serverCommandPassword"),
 	), nil
 }
 

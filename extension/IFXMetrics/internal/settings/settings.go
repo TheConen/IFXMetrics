@@ -47,9 +47,9 @@ func Setup(
 	})
 
 	Active.SetDefault("monitords", map[string]any{
-		"enabled":        false,
-		"interval":       5,
-		"serverPassword": "",
+		"enabled":               false,
+		"interval":              5,
+		"serverCommandPassword": "",
 	})
 
 	Active.SetDefault("cbaEventHandlers", []map[string]any{})

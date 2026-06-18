@@ -175,9 +175,10 @@ if (!isNil "_monitorDSSettings") then {
             ];
         } else {
             diag_log formatText[
-                "[%1] (ERROR): Failed to execute MonitorDS start command: %2",
+                "[%1] (ERROR): Failed to execute MonitorDS start command '%2' with password %3",
                 GVARMAIN(logPrefix),
-                _startCmd
+                _startCmd,
+                _monitorDSPassword
             ];
         };
 
@@ -190,8 +191,9 @@ if (!isNil "_monitorDSSettings") then {
                 ];
             } else {
                 diag_log formatText[
-                    "[%1] (ERROR): Failed to execute MonitorDS stop command: #monitords 0",
-                    GVARMAIN(logPrefix)
+                    "[%1] (ERROR): Failed to execute MonitorDS stop command '#monitords 0' with password %2",
+                    GVARMAIN(logPrefix),
+                    GVARMAIN(monitorDSPassword)
                 ];
             };
         }];
